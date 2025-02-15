@@ -1,14 +1,13 @@
-import numpy as np
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
-from datetime import datetime, timedelta
 
 # Load and Preprocess Data
 data = pd.read_csv(
-    './corrected_data.csv',  # Use absolute path
+    'corrected_data.csv',
     skiprows=1,
     header=0,
     names=[
@@ -56,44 +55,4 @@ early_stop = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=
 model.fit(X_train, y_train, epochs=200, batch_size=32, validation_split=0.1, callbacks=[early_stop])
 
 # Save the model
-model.save('model.h5')  # Use absolute path
-
-class CryptoPricePredictor:
-    def __init__(self):
-        # Use absolute path for the model file
-        model_path = 'model.h5'
-        self.model = load_model(model_path)
-        self.scaler = np.load('scaler.npy')
-        self.min_vals = np.load('min_vals.npy')
-        self.data_shape = np.load('data_shape.npy')
-        self.window_size = 60
-
-    def transform(self, data):
-        return data * self.scaler + self.min_vals
-
-    def inverse_transform(self, data):
-        return (data - self.min_vals) / self.scaler
-
-    def predict_for_date(self, target_date_str):
-        target_date = datetime.strptime(target_date_str, "%Y-%m-%d")
-        last_date = datetime.now() - timedelta(days=1)
-        
-        if target_date <= last_date:
-            raise ValueError("Target date must be after the last available date")
-        
-        days_ahead = (target_date - last_date).days
-        
-        # Generate sequence for prediction
-        sequence = np.zeros((1, self.window_size, self.data_shape[1]))
-        prediction = self.model.predict(sequence)
-        
-        # Transform back to original scale
-        dummy_row = np.zeros((1, self.data_shape[1]))
-        dummy_row[0, :3] = prediction[0]
-        final_prediction = self.transform(dummy_row)[0, :3]
-        
-        return {
-            'btc': float(final_prediction[0]),
-            'eth': float(final_prediction[1]),
-            'ltc': float(final_prediction[2])
-        }
+model.save('model.h5')
