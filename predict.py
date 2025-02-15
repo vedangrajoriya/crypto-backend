@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 # Load and Preprocess Data
 data = pd.read_csv(
-    'e:/project mini/ml-backend/corrected_data.csv',  # Use absolute path
+    './corrected_data.csv',  # Use absolute path
     skiprows=1,
     header=0,
     names=[
