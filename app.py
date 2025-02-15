@@ -7,6 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 predictor = CryptoPricePredictor()
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 @app.route('/predict', methods=['POST'])
 def predict():
