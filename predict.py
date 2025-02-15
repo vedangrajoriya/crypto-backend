@@ -56,15 +56,15 @@ early_stop = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=
 model.fit(X_train, y_train, epochs=200, batch_size=32, validation_split=0.1, callbacks=[early_stop])
 
 # Save the model
-model.save('e:/project mini/ml-backend/model.h5')  # Use absolute path
+model.save('model.h5')  # Use absolute path
 
 class CryptoPricePredictor:
     def __init__(self):
         # Use absolute path for the model file
-        model_path = 'e:/project mini/ml-backend/model.h5'
+        model_path = 'model.h5'
         self.model = load_model(model_path)
-        self.scaler = np.load('e:/project mini/ml-backend/scaler.npy')
-        self.min_vals = np.load('e:/project mini/ml-backend/min_vals.npy')
+        self.scaler = np.load('scaler.npy')
+        self.min_vals = np.load('min_vals.npy')
         self.data_shape = np.load('data_shape.npy')
         self.window_size = 60
 
